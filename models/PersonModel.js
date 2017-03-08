@@ -11,5 +11,5 @@ var personSchema = new Schema({
   kids: []
 });
 
-var Person = mongoose.model("PersonlModel", personSchema);
+var Person = mongoose.model("PersonModel", personSchema);
 module.exports = Person;

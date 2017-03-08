@@ -1,6 +1,6 @@
 /*=====================================================
-Our Setup - 
-we are going to send requests to another API 
+Our Setup -
+we are going to send requests to another API
 so we need a bit more than usual!
 =======================================================*/
 var bodyParser = require('body-parser')
@@ -29,9 +29,9 @@ for (var i = 0; i < isbns.length; i++) {
   /*=====================================================
   the first time you run your code, uncomment the function below.
   for subsequent runs, re-comment it so that it runs only once!
-  that said, there is a fail-safe to avoid duplicates below  
+  that said, there is a fail-safe to avoid duplicates below
   =======================================================*/
-  loadFromAPI(apiURL)
+  // loadFromAPI(apiURL)
 }
 console.log("done");
 
@@ -103,7 +103,7 @@ var getKids = function(numKids) {
 
 /*=====================================================
 the below code always makes sure
-you don't have over 100 people and 
+you don't have over 100 people and
 adds new people and their kids until you do have 100
 
 try to understand how this code works
@@ -140,7 +140,7 @@ app.listen(3000, function() {
 
 
 /*=====================================================
-Exercises - now that your databases are full 
+Exercises - now that your databases are full
 and your server is running do the following:
 =======================================================*/
 
@@ -148,19 +148,106 @@ and your server is running do the following:
 ----------------------*/
 //1. Find books with fewer than 500 but more than 200 pages
 
+// Book.find({ $and: [ { pages: { $gt: 200 } }, {pages: { $lt: 500 } } ] }, function (error, result){
+//   if(error) {return console.error(error);}
+//   console.log("----------------------------------");
+//   console.log("Books Ex. 1");
+//   console.log (result);
+//   console.log("----------------------------------");
+// })
+
 //2. Find books whose rating is less than 5, and sort by the author's name
 
-//3. Find all the Fiction books, skip the first 2, and display only 3 of them 
+// Book.
+//   find({}).
+//   where('rating').lt(5).
+//   sort('author').
+//   exec(function (err,books){
+//     console.log("----------------------------------");
+//     console.log("Books Ex. 2");
+//     console.log(books);
+//     console.log("----------------------------------");
+//   });
 
+//3. Find all the Fiction books, skip the first 2, and display only 3 of them
+
+// Book.find({genres: {$in: ['Fiction'] }}).
+// Book.find().where('genres').in(['Fiction']).
+//   skip(2).
+//   limit(3).
+//   exec(function(err,books){
+//     console.log("----------------------------------");
+//     console.log("Books Ex. 3");
+//     console.log(books);
+//     console.log("----------------------------------");
+// });
 
 /*People
 ----------------------*/
 //1. Find all the people who are tall (>180) AND rich (>30000)
 
+// Person.find().
+//   where('height').gt(180).
+//   where('salary').gt(30000).
+//   exec(function(err,people){
+//     console.log("----------------------------------");
+//     console.log("People Ex. 1");
+//     console.log(people);
+//     console.log("Total found: " + people.length);
+//     console.log("----------------------------------");
+//   });
+
 //2. Find all the people who are tall (>180) OR rich (>30000)
+
+// Person.find({$or: [{'height': {$gt: 180}}, {'salary': {$gt: 30000}}] }).
+//   exec(function(err,people){
+//     console.log("----------------------------------");
+//     console.log("People Ex. 2");
+//     console.log(people);
+//     console.log("Total found: " + people.length);
+//     console.log("----------------------------------");
+//   });
 
 //3. Find all the people who have grey hair or eyes, and are skinny (<70)
 
+// Person.find().and([{'weight': {$lt:70}}, {$or: [{hair: "grey"}, {eyes: "grey"}] }] ).
+// exec(function(err,people){
+//   console.log("----------------------------------");
+//   console.log("People Ex. 3");
+//   console.log(people);
+//   console.log("Total found: " + people.length);
+//   console.log("----------------------------------");
+// });
+
 //4. Find people who have at least 1 kid with grey hair
 
+Person.find({'kids.hair': "grey"}).
+exec(function(err,people){
+  console.log("----------------------------------");
+  console.log("People Ex. 4");
+  for (i=0; i<people.length; i++){
+    console.log(people[i].kids);
+  }
+  // console.log(people);
+  console.log("Total found: " + people.length);
+  console.log("----------------------------------");
+});
+
+
 //5. Find all the people who have at least one overweight kid, and are overweight themselves (>100)
+
+Person.find({$and: [ {'kids.weight': {$gt: 100}}, {'weight': {$gt: 100}} ] }).
+exec(function(err,people){
+  console.log("----------------------------------");
+  console.log("People Ex. 5");
+
+  // Aaron's code...
+  for(p in people){
+		var person = people[p];
+		console.log("Person", p,"has kids:\n",person.kids);
+  }
+
+  // console.log(people);
+  console.log("Total found: " + people.length);
+  console.log("----------------------------------");
+});
